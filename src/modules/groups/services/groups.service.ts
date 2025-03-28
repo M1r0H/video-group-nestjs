@@ -4,13 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { filter, map } from 'lodash';
 import { IsNull, TreeRepository } from 'typeorm';
+import { ResponseInterface } from '@core/types/types';
 
 @Injectable()
 export class GroupsService {
   @InjectRepository(Group)
   private readonly groupsTreeRepository: TreeRepository<Group>;
 
-  public async all(params: GetAllParams): Promise<Group[]> {
+  public async all(params: GetAllParams): Promise<ResponseInterface<Group>> {
     const { name, parentId } = params;
     const query = this.groupsTreeRepository
       .createQueryBuilder('group')
@@ -26,13 +27,18 @@ export class GroupsService {
       query.andWhere('parent.id = :parentId', { parentId });
     }
 
-    return query.getMany();
+    const [list, total] = await query.getManyAndCount();
+
+    return {
+      data: list,
+      total,
+    };
   }
 
   public async getPaginatedTree(
     page: number,
     limit: number,
-  ): Promise<{ data: Group[]; total: number }> {
+  ): Promise<ResponseInterface<Group>> {
     const [roots, total] = await this.groupsTreeRepository.findAndCount({
       where: { parent: IsNull() },
       skip: (page - 1) * limit,

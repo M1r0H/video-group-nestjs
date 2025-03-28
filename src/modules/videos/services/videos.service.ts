@@ -4,13 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isUndefined } from 'lodash';
 import { Brackets, Repository } from 'typeorm';
+import { ResponseInterface } from '@core/types/types';
 
 @Injectable()
 export class VideosService {
   @InjectRepository(Video)
   private videoRepository: Repository<Video>;
 
-  public all(params: VideosListQueryParams): Promise<[Video[], number]> {
+  public async all(params: VideosListQueryParams): Promise<ResponseInterface<Video>> {
     const { filters, page, perPage, search } = params;
     const query = this.videoRepository
       .createQueryBuilder('video')
@@ -19,22 +20,22 @@ export class VideosService {
     if (page && perPage) {
       query
         .take(perPage ? perPage : 100)
-        .skip(page > 1 ? (page - 1) * perPage : 0);
+        .skip(page > 1 ? ( page - 1 ) * perPage : 0);
     }
 
     if (search) {
       query.andWhere(
         new Brackets((qb) => {
           qb.where('video.title ILIKE :search', {
-            search: `%${search}%`,
+            search: `%${ search }%`,
           }).orWhere('video.description ILIKE :search', {
-            search: `%${search}%`,
+            search: `%${ search }%`,
           });
         }),
       );
     }
 
-    for (const [key, value] of Object.entries(filters ?? {})) {
+    for (const [ key, value ] of Object.entries(filters ?? {})) {
       if (isUndefined(value)) {
         continue;
       }
@@ -47,14 +48,19 @@ export class VideosService {
         }
 
         case 'title': {
-          query.andWhere('video.title ILIKE :title', { title: `%${value}%` });
+          query.andWhere('video.title ILIKE :title', { title: `%${ value }%` });
 
           break;
         }
       }
     }
 
-    return query.getManyAndCount();
+    const [ list, total ] = await query.getManyAndCount();
+
+    return {
+      data: list,
+      total,
+    };
   }
 
   public async create(params: CreateVideoParams): Promise<Video> {

@@ -12,6 +12,7 @@ import { GroupsService } from '@modules/groups/services/groups.service';
 import { UserRole } from '@modules/users/constans';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ResponseInterface } from '@core/types/types';
 
 @ApiTags('Groups')
 @ApiBearerAuth()
@@ -35,7 +36,7 @@ export class GroupsController {
     description: 'Filter groups by parent group ID',
   })
   @ApiResponse({ status: 200, description: 'Returns a list of groups' })
-  public index(@Query() query: GroupsListQueryRequest): Promise<Group[]> {
+  public index(@Query() query: GroupsListQueryRequest): Promise<ResponseInterface<Group>> {
     return this.groupsService.all(query);
   }
 
@@ -59,7 +60,7 @@ export class GroupsController {
   })
   public getTree(
     @Query() query: GroupsTreeQueryRequest,
-  ): Promise<{ data: Group[]; total: number }> {
+  ): Promise<ResponseInterface<Group>> {
     return this.groupsService.getPaginatedTree(query.page, query.limit);
   }
 

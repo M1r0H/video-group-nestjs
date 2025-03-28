@@ -3,6 +3,7 @@ import { GroupsService } from '@modules/groups/services/groups.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ResponseInterface } from '@core/types/types';
 
 describe('GroupsService', () => {
   let service: GroupsService;
@@ -12,7 +13,10 @@ describe('GroupsService', () => {
     leftJoinAndSelect: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
     andWhere: jest.fn().mockReturnThis(),
-    getMany: jest.fn().mockResolvedValue([]),
+    getManyAndCount: jest.fn().mockResolvedValue({
+      data: [],
+      total: 0,
+    }),
   };
 
   beforeEach(async () => {
@@ -63,33 +67,45 @@ describe('GroupsService', () => {
   });
 
   it('should return all groups', async () => {
-    const mockGroups = [{ id: '1' }, { id: '2' }] as Group[];
+    const mockGroups = [[{ id: '1' }, { id: '2' }], 2] as [Group[], number];
+    const response = {
+      data: mockGroups[0],
+      total: mockGroups[1],
+    } as ResponseInterface<Group>;
 
-    queryBuilderMock.getMany.mockResolvedValueOnce(mockGroups);
+    queryBuilderMock.getManyAndCount.mockResolvedValueOnce(mockGroups);
 
     const result = await service.all({});
 
-    expect(result).toEqual(mockGroups);
+    expect(result).toEqual(response);
   });
 
   it('should filter groups by name', async () => {
-    const resultGroups = [{ id: '10', name: 'Frontend' }] as Group[];
+    const resultGroups = [[{ id: '10', name: 'Frontend' }], 1] as [Group[], number];
+    const response = {
+      data: resultGroups[0],
+      total: resultGroups[1],
+    } as ResponseInterface<Group>;
 
-    queryBuilderMock.getMany.mockResolvedValueOnce(resultGroups);
+    queryBuilderMock.getManyAndCount.mockResolvedValueOnce(resultGroups);
 
     const result = await service.all({ name: 'Front' });
 
-    expect(result).toEqual(resultGroups);
+    expect(result).toEqual(response);
   });
 
   it('should filter groups by parentId', async () => {
-    const filtered = [{ id: '11', parent: { id: '5' } }] as Group[];
+    const filtered = [[{ id: '11', parent: { id: '5' } }], 1] as [Group[], number];
+    const response = {
+      data: filtered[0],
+      total: filtered[1],
+    } as ResponseInterface<Group>;
 
-    queryBuilderMock.getMany.mockResolvedValueOnce(filtered);
+    queryBuilderMock.getManyAndCount.mockResolvedValueOnce(filtered);
 
     const result = await service.all({ parentId: '5' });
 
-    expect(result).toEqual(filtered);
+    expect(result).toEqual(response);
   });
 
   it('should create a new group', async () => {
@@ -117,7 +133,7 @@ describe('GroupsService', () => {
     expect(repo.save).toHaveBeenCalledWith({
       ...group,
       name: 'New Name',
-      parent: null,
+      parent: undefined,
     });
   });
 

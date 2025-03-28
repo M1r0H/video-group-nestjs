@@ -3,21 +3,23 @@ import { Video } from '@modules/videos/entities/video.entity';
 import { VideosService } from '@modules/videos/services/videos.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
+import { ResponseInterface } from '@core/types/types';
 
 describe('VideosService', () => {
   let service: VideosService;
   let videoRepo: jest.Mocked<Repository<Video>>;
   let groupRepo: jest.Mocked<Repository<Group>>;
-  let queryBuilder: jest.Mocked<SelectQueryBuilder<Video>>;
+  const queryBuilder = {
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+    getManyAndCount: jest.fn().mockResolvedValue({
+      data: [],
+      total: 0,
+    }),
+  };
 
   beforeEach(async () => {
-    queryBuilder = {
-      leftJoinAndSelect: jest.fn().mockReturnThis(),
-      andWhere: jest.fn().mockReturnThis(),
-      getMany: jest.fn().mockResolvedValue([]),
-    } as any;
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         VideosService,
@@ -99,23 +101,25 @@ describe('VideosService', () => {
   });
 
   it('should return all videos without filter', async () => {
-    const list = [{ id: '1' }, { id: '2' }] as Video[];
+    const list = [[{ id: '1' }, { id: '2' }], 2] as [Video[], number];
+    const response = { data: list[0], total: list[1] } as ResponseInterface<Video>;
 
-    queryBuilder.getMany.mockResolvedValue(list);
+    queryBuilder.getManyAndCount.mockResolvedValue(list);
 
     const result = await service.all({});
 
-    expect(result).toEqual(list);
+    expect(result).toEqual(response);
   });
 
   it('should return filtered videos by groupId', async () => {
-    const list = [{ id: '3' }] as Video[];
+    const list = [[{ id: '3' }], 1] as [Video[], number];
+    const response = { data: list[0], total: list[1] } as ResponseInterface<Video>;
 
-    queryBuilder.getMany.mockResolvedValue(list);
+    queryBuilder.getManyAndCount.mockResolvedValue(list);
 
     const result = await service.all({ filters: { groupId: '5' } });
 
-    expect(result).toEqual(list);
+    expect(result).toEqual(response);
   });
 
   it('should update an existing video', async () => {

@@ -10,6 +10,7 @@ import { VideosListQueryRequest } from '@modules/videos/requests/videos-list-que
 import { VideosService } from '@modules/videos/services/videos.service';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ResponseInterface } from '@core/types/types';
 
 @ApiTags('Videos')
 @ApiBearerAuth()
@@ -53,23 +54,19 @@ export class VideosController {
   @ApiResponse({ status: 200, description: 'Returns a list of videos' })
   public async index(
     @Query() query: VideosListQueryRequest,
-  ): Promise<{ videos: Video[]; total: number }> {
+  ): Promise<ResponseInterface<Video>> {
     const { groupId, title, page, perPage, search } = query;
     const filters = {
       groupId,
       title,
     };
-    const [videos, total] = await this.videosService.all({
+
+    return this.videosService.all({
       page,
       perPage,
       filters,
       search,
     });
-
-    return {
-      videos,
-      total,
-    };
   }
 
   @Get(':id')
