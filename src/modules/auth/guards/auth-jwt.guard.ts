@@ -1,18 +1,12 @@
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-import { AuthTokensService } from '../services/auth-tokens.service';
+import { AuthTokensService } from '@modules/auth/services/auth-tokens.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  public constructor(
-    private readonly moduleRef: ModuleRef,
-  ) {
+  public constructor(private readonly moduleRef: ModuleRef) {
     super();
   }
 
@@ -32,9 +26,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token = await this.moduleRef.get(AuthTokensService, {
-      strict: false,
-    }).oneByToken(tokenValue, ['user']);
+    const token = await this.moduleRef
+      .get(AuthTokensService, {
+        strict: false,
+      })
+      .oneByToken(tokenValue, ['user']);
 
     if (!token || token.expiresAt < new Date()) {
       throw new UnauthorizedException('Invalid credentials');

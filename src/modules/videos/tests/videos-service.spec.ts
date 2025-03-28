@@ -51,7 +51,11 @@ describe('VideosService', () => {
   });
 
   it('should return video by ID', async () => {
-    const video = { id: '1', title: 'NestJS', url: 'https://example.com' } as Video;
+    const video = {
+      id: '1',
+      title: 'NestJS',
+      url: 'https://example.com',
+    } as Video;
 
     videoRepo.findOne.mockResolvedValue(video);
 
@@ -129,7 +133,11 @@ describe('VideosService', () => {
   it('should return null when updating non-existent video', async () => {
     videoRepo.findOne.mockResolvedValue(null);
 
-    const result = await service.update('99', { title: 'New', url: 'https://old', groupId: '10' });
+    const result = await service.update('99', {
+      title: 'New',
+      url: 'https://old',
+      groupId: '10',
+    });
 
     expect(result).toBeNull();
   });

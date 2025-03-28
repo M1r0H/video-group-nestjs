@@ -38,5 +38,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   ],
   exports: [AuthService],
 })
-export class AuthModule {
-}
+export class AuthModule {}

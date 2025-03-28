@@ -15,7 +15,10 @@ export class AuthTokensService {
     return this.tokensRepository.save(params);
   }
 
-  public async oneByToken(token: string, relations: string[] = []): Promise<Token | null> {
+  public async oneByToken(
+    token: string,
+    relations: string[] = [],
+  ): Promise<Token | null> {
     return this.tokensRepository.findOne({
       where: { token },
       relations,

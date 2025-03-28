@@ -1,12 +1,8 @@
 import { AllExceptionsFilter } from '@core/filters/http-exception.filter';
 import { CustomValidationPipe } from '@core/pipes/validation.pipe';
 import { AuthModule } from '@modules/auth/auth.module';
-import { Token } from '@modules/auth/entities/token.entity';
-import { Group } from '@modules/groups/entities/group.entity';
 import { GroupsModule } from '@modules/groups/groups.module';
-import { User } from '@modules/users/entities/user.entity';
 import { UsersModule } from '@modules/users/users.module';
-import { Video } from '@modules/videos/entities/video.entity';
 import { VideosModule } from '@modules/videos/videos.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -27,19 +23,16 @@ import { StripSensitiveFieldsInterceptor } from '@src/core/interseptors/strip-se
       username: process.env.DB_USERNAME,
       password: String(process.env.DB_PASSWORD),
       database: process.env.DB_DATABASE,
-      entities: [
-        Group,
-        Video,
-        User,
-        Token,
-      ],
+      entities: ['dist/src/modules/**/entities/*.entity.js'],
       migrations: ['dist/src/migrations/*.js'],
       migrationsRun: true,
     }),
-    ThrottlerModule.forRoot([{
-      ttl: 60,
-      limit: 100,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60,
+        limit: 100,
+      },
+    ]),
     GroupsModule,
     VideosModule,
     UsersModule,
@@ -64,5 +57,4 @@ import { StripSensitiveFieldsInterceptor } from '@src/core/interseptors/strip-se
     },
   ],
 })
-export class AppModule {
-}
+export class AppModule {}

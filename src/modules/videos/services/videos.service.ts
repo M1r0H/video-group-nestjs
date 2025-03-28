@@ -25,8 +25,11 @@ export class VideosService {
     if (search) {
       query.andWhere(
         new Brackets((qb) => {
-          qb.where('video.title ILIKE :search', { search: `%${search}%` })
-            .orWhere('video.description ILIKE :search', { search: `%${search}%` });
+          qb.where('video.title ILIKE :search', {
+            search: `%${search}%`,
+          }).orWhere('video.description ILIKE :search', {
+            search: `%${search}%`,
+          });
         }),
       );
     }
@@ -59,7 +62,10 @@ export class VideosService {
   }
 
   public async one(id: string): Promise<Video | null> {
-    const video = await this.videoRepository.findOne({ where: { id }, relations: ['group'] });
+    const video = await this.videoRepository.findOne({
+      where: { id },
+      relations: ['group'],
+    });
 
     if (!video) {
       return null;
@@ -68,7 +74,10 @@ export class VideosService {
     return video;
   }
 
-  public async update(id: string, params: UpdateVideoParams): Promise<Video | null> {
+  public async update(
+    id: string,
+    params: UpdateVideoParams,
+  ): Promise<Video | null> {
     const oldVideo = await this.one(id);
 
     if (!oldVideo) {

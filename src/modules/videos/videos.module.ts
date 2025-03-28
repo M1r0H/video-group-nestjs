@@ -5,12 +5,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      Video,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([Video])],
   controllers: [VideosController],
   providers: [VideosService],
 })
-export class VideosModule { }
+export class VideosModule {}

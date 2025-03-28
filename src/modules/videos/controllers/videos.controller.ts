@@ -16,10 +16,7 @@ import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiResponse, ApiTags } from
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('videos')
 export class VideosController {
-  public constructor(
-    private readonly videosService: VideosService,
-  ) {
-  }
+  public constructor(private readonly videosService: VideosService) {}
 
   @Get()
   @AuthRole(UserRole.VIEWER, UserRole.EDITOR)
@@ -54,7 +51,9 @@ export class VideosController {
     description: 'Number of videos per page',
   })
   @ApiResponse({ status: 200, description: 'Returns a list of videos' })
-  public async index(@Query() query: VideosListQueryRequest): Promise<{ videos: Video[]; total: number }> {
+  public async index(
+    @Query() query: VideosListQueryRequest,
+  ): Promise<{ videos: Video[]; total: number }> {
     const { groupId, title, page, perPage, search } = query;
     const filters = {
       groupId,
@@ -97,10 +96,16 @@ export class VideosController {
   @AuthRole(UserRole.EDITOR)
   @ApiParam({ name: 'id', description: 'Video ID to update' })
   @ApiBody({ type: VideosEditRequest })
-  @ApiResponse({ status: 200, description: 'Updates and returns the updated video' })
+  @ApiResponse({
+    status: 200,
+    description: 'Updates and returns the updated video',
+  })
   @ApiResponse({ status: 400, description: 'Validation error' })
   @ApiResponse({ status: 404, description: 'Video not found' })
-  public edit(@Param('id') id: string, @Body() body: VideosEditRequest): Promise<Video | null> {
+  public edit(
+    @Param('id') id: string,
+    @Body() body: VideosEditRequest,
+  ): Promise<Video | null> {
     return this.videosService.update(id, body);
   }
 

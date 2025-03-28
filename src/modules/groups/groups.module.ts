@@ -6,11 +6,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      Group,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([Group])],
   controllers: [GroupsController],
   providers: [
     // Decorators
@@ -20,4 +16,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     GroupsService,
   ],
 })
-export class GroupsModule { }
+export class GroupsModule {}

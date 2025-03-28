@@ -6,9 +6,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([
-    User,
-  ])],
+  imports: [TypeOrmModule.forFeature([User])],
   providers: [
     // Decorators
     IsUserExist,
@@ -19,5 +17,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   ],
   exports: [UsersService],
 })
-export class UsersModule { }
-
+export class UsersModule {}

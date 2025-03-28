@@ -17,7 +17,7 @@ async function bootstrap(): Promise<void> {
 
   SwaggerModule.setup('swagger', app, document);
 
-  // enable dependency injection for class-validator
+  // Enable dependency injection for class-validator
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(process.env.PORT || 3001);

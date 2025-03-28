@@ -4,20 +4,19 @@ import {
   registerDecorator,
   ValidationOptions,
   ValidatorConstraint,
-  ValidatorConstraintInterface
+  ValidatorConstraintInterface,
 } from 'class-validator';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
-export class IsUserEmailAlreadyRegistered implements ValidatorConstraintInterface {
-
+export class IsUserEmailAlreadyRegistered
+implements ValidatorConstraintInterface
+{
   @Inject(UsersService)
-  private readonly usersService: UsersService
+  private readonly usersService: UsersService;
 
   public async validate(email: string): Promise<boolean> {
-    return this.usersService
-      .oneByEmail(email)
-      .then((user) => !user);
+    return this.usersService.oneByEmail(email).then((user) => !user);
   }
 
   public defaultMessage(): string {
@@ -25,7 +24,9 @@ export class IsUserEmailAlreadyRegistered implements ValidatorConstraintInterfac
   }
 }
 
-export function UserEmailAlreadyRegistered(validationOptions?: ValidationOptions) {
+export function UserEmailAlreadyRegistered(
+  validationOptions?: ValidationOptions,
+) {
   return function (object: object, propertyName: string): void {
     registerDecorator({
       target: object.constructor,

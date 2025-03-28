@@ -4,19 +4,17 @@ import {
   registerDecorator,
   ValidationOptions,
   ValidatorConstraint,
-  ValidatorConstraintInterface
+  ValidatorConstraintInterface,
 } from 'class-validator';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class IsUserExist implements ValidatorConstraintInterface {
   @Inject(UsersService)
-  private readonly usersService: UsersService
+  private readonly usersService: UsersService;
 
   public async validate(email: string): Promise<boolean> {
-    return this.usersService
-      .oneByEmail(email)
-      .then((user) => !!user);
+    return this.usersService.oneByEmail(email).then((user) => !!user);
   }
 
   public defaultMessage(): string {

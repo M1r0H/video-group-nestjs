@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class Groups1742933292015 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -38,7 +38,7 @@ export class Groups1742933292015 implements MigrationInterface {
             name: 'updatedAt',
             type: 'timestamp',
             default: 'now()',
-          }
+          },
         ],
       }),
     );

@@ -18,10 +18,7 @@ import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiResponse, ApiTags } from
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('groups')
 export class GroupsController {
-  public constructor(
-    private readonly groupsService: GroupsService,
-  ) {
-  }
+  public constructor(private readonly groupsService: GroupsService) {}
 
   @Get()
   @AuthRole(UserRole.VIEWER, UserRole.EDITOR)
@@ -56,8 +53,13 @@ export class GroupsController {
     type: Number,
     description: 'Limit',
   })
-  @ApiResponse({ status: 200, description: 'Returns a paginated tree of groups' })
-  public getTree(@Query() query: GroupsTreeQueryRequest): Promise<{ data: Group[]; total: number }> {
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a paginated tree of groups',
+  })
+  public getTree(
+    @Query() query: GroupsTreeQueryRequest,
+  ): Promise<{ data: Group[]; total: number }> {
     return this.groupsService.getPaginatedTree(query.page, query.limit);
   }
 
@@ -77,7 +79,9 @@ export class GroupsController {
   @ApiBody({ type: GroupsCreateRequest })
   @ApiResponse({ status: 201, description: 'Creates a new group' })
   @ApiResponse({ status: 400, description: 'Validation error' })
-  public async create(@Body() createGroupDto: GroupsCreateRequest): Promise<Group> {
+  public async create(
+    @Body() createGroupDto: GroupsCreateRequest,
+  ): Promise<Group> {
     return this.groupsService.create({
       name: createGroupDto.name,
       description: createGroupDto.description,
@@ -90,7 +94,10 @@ export class GroupsController {
   @AuthRole(UserRole.EDITOR)
   @ApiParam({ name: 'id', description: 'Group ID to update' })
   @ApiBody({ type: GroupsEditRequest })
-  @ApiResponse({ status: 200, description: 'Updates and returns the updated group' })
+  @ApiResponse({
+    status: 200,
+    description: 'Updates and returns the updated group',
+  })
   @ApiResponse({ status: 400, description: 'Validation error' })
   @ApiResponse({ status: 404, description: 'Group not found' })
   public async edit(
@@ -110,9 +117,7 @@ export class GroupsController {
   @ApiParam({ name: 'id', description: 'Group ID to delete' })
   @ApiResponse({ status: 200, description: 'Group successfully deleted' })
   @ApiResponse({ status: 404, description: 'Group not found' })
-  public async delete(
-    @Param('id') id: string
-  ): Promise<void> {
+  public async delete(@Param('id') id: string): Promise<void> {
     return this.groupsService.remove(id);
   }
 }

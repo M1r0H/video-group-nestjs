@@ -19,9 +19,7 @@ export class IsGroupExist implements ValidatorConstraintInterface {
       return true;
     }
 
-    return this.groupsService
-      .one(groupId)
-      .then((group) => !!group);
+    return this.groupsService.one(groupId).then((group) => !!group);
   }
 
   public defaultMessage(args: ValidationArguments): string {

@@ -1,9 +1,4 @@
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -12,7 +7,7 @@ export class StripSensitiveFieldsInterceptor implements NestInterceptor {
   private readonly sensitiveFields = ['password'];
   private readonly skipFields = ['createdAt', 'updatedAt'];
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map(async (data) => {
         const resolvedData = await Promise.resolve(data);
@@ -30,8 +25,6 @@ export class StripSensitiveFieldsInterceptor implements NestInterceptor {
     if (Array.isArray(data)) {
       return data.map((item) => this.removeSensitiveFields(item));
     }
-
-
 
     if (typeof data === 'object' && data !== null) {
       const cleanData = { ...data };
@@ -60,5 +53,4 @@ export class StripSensitiveFieldsInterceptor implements NestInterceptor {
 
     return data;
   }
-
 }

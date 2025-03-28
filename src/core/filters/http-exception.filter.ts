@@ -5,10 +5,7 @@ import { isObject } from 'lodash';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  public constructor(
-    private readonly httpAdapterHost: HttpAdapterHost,
-  ) {
-  }
+  public constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   public async catch(exception: Error | HttpException, host: ArgumentsHost): Promise<void> {
     const { httpAdapter } = this.httpAdapterHost;
@@ -34,10 +31,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const res = exception.getResponse();
 
       if (isObject(res)) {
-        responseBody.message = ( res as any ).message ?? 'Internal server error';
+        responseBody.message = (res as any).message ?? 'Internal server error';
 
-        if (( res as any ).fields) {
-          ( responseBody as any ).fields = ( res as any ).fields;
+        if ((res as any).fields) {
+          (responseBody as any).fields = (res as any).fields;
         }
       } else {
         responseBody.message = res as string;

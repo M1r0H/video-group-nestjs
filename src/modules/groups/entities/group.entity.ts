@@ -1,5 +1,15 @@
 import { Video } from '@modules/videos/entities/video.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Tree, TreeChildren, TreeParent, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Tree,
+  TreeChildren,
+  TreeParent,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: 'groups' })
 @Tree('closure-table')

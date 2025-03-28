@@ -114,7 +114,11 @@ describe('GroupsService', () => {
     const result = await service.update('3', { name: 'New Name' });
 
     expect(result).toEqual(updatedGroup);
-    expect(repo.save).toHaveBeenCalledWith({ ...group, name: 'New Name', parent: null });
+    expect(repo.save).toHaveBeenCalledWith({
+      ...group,
+      name: 'New Name',
+      parent: null,
+    });
   });
 
   it('should return null when updating a non-existent group', async () => {

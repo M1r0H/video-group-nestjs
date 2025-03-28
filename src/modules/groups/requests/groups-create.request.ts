@@ -21,7 +21,8 @@ export class GroupsCreateRequest {
   public description?: string;
 
   @ApiPropertyOptional({
-    description: 'ID of the parent group if this group is nested for first group dont send this field',
+    description:
+      'ID of the parent group if this group is nested for first group dont send this field',
   })
   @IsOptional()
   @IsUUID('4', { message: 'Parent ID must be a valid UUID' })

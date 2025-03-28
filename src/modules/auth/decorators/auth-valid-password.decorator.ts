@@ -1,15 +1,24 @@
 import { UsersService } from '@modules/users/services/users.service';
 import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { registerDecorator, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import {
+  registerDecorator,
+  ValidationArguments,
+  ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class IsValidPassword implements ValidatorConstraintInterface {
   @Inject(UsersService)
-  private readonly usersService: UsersService
+  private readonly usersService: UsersService;
 
-  public async validate(password: string, data: ValidationArguments): Promise<boolean> {
+  public async validate(
+    password: string,
+    data: ValidationArguments,
+  ): Promise<boolean> {
     const { email } = data.object as { email: string };
 
     const user = await this.usersService.oneByEmail(email);

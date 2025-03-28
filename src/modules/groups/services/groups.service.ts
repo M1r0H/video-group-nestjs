@@ -29,7 +29,10 @@ export class GroupsService {
     return query.getMany();
   }
 
-  public async getPaginatedTree(page: number, limit: number): Promise<{ data: Group[]; total: number }> {
+  public async getPaginatedTree(
+    page: number,
+    limit: number,
+  ): Promise<{ data: Group[]; total: number }> {
     const [roots, total] = await this.groupsTreeRepository.findAndCount({
       where: { parent: IsNull() },
       skip: (page - 1) * limit,
@@ -37,7 +40,7 @@ export class GroupsService {
     });
 
     const trees = await Promise.all(
-      roots.map(root => this.groupsTreeRepository.findDescendantsTree(root))
+      roots.map((root) => this.groupsTreeRepository.findDescendantsTree(root)),
     );
 
     return {
@@ -56,7 +59,9 @@ export class GroupsService {
   public async create(params: GroupCreateParams): Promise<Group> {
     const { parentId, ...rest } = params;
 
-    const parent = parentId ? await this.groupsTreeRepository.findOneBy({ id: parentId }) : null;
+    const parent = parentId
+      ? await this.groupsTreeRepository.findOneBy({ id: parentId })
+      : null;
 
     return await this.groupsTreeRepository.save({
       ...rest,
@@ -64,7 +69,10 @@ export class GroupsService {
     });
   }
 
-  public async update(id: string, params: GroupEditParams): Promise<Group | null> {
+  public async update(
+    id: string,
+    params: GroupEditParams,
+  ): Promise<Group | null> {
     const { parentId, ...rest } = params;
     const group = await this.one(id);
 
@@ -74,8 +82,9 @@ export class GroupsService {
 
     const parent = params.hasOwnProperty('parentId')
       ? parentId
-        ? await this.one(parentId) : null
-      : group.parent
+        ? await this.one(parentId)
+        : null
+      : group.parent;
 
     return this.groupsTreeRepository.save({
       ...group,
@@ -113,7 +122,9 @@ export class GroupsService {
 
     const tree = await this.groupsTreeRepository.findDescendants(group);
 
-    return filter(map(tree, (g) => g.id), (childId) => childId !== id);
+    return filter(
+      map(tree, (g) => g.id),
+      (childId) => childId !== id,
+    );
   }
-
 }
