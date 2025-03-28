@@ -106,7 +106,7 @@ http://localhost:3001/swagger
 - **NestJS** — Backend framework for building APIs.
 - **TypeORM** — ORM for working with PostgreSQL.
 - **Swagger** — API documentation.
-- **Jest / Supertest** — Unit and integration testing.
+- **Jest / Supertest** — Unit testing.
 
 ---
 
